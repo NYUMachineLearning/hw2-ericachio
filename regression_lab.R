@@ -7,7 +7,7 @@ fit = lm(y ~ x) # Fitting a linear model
 abline(fit$coefficients[1],fit$coefficients[2],col='red') # Plotting the linear fit
 
 # 100 times
-stddev = 1/2 # Choose the residual variance here
+stddev = 1/2 # Choose the residual variance here #sd down to 5 - stddev=1/5
 N = 100
 plot(NULL,NULL,xlab='x',ylab='y',main='',xlim=c(-3,3),ylim=c(-2,4))
 for (i in 1:100) {
