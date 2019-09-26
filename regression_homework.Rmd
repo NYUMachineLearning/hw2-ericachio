@@ -108,6 +108,9 @@ ggplot(data = train_regression) +
 #y ~ x
 linear_regression <- train(Temp ~ Wind, data=train_regression, method = "lm")
 #get coefficients, do abs line w coefficients
+linear_regression$finalModel$coefficients
+
+
 
 ```
 
@@ -154,17 +157,30 @@ plot(linear_predict, test_regression$Temp)
 linear_regression$finalModel$coefficients
 
 # plot the regression line on the predicted values
-plot(linear_predict) + abline( 89.556989, -1.168743)
+plot(test_regression$Wind, linear_predict) + abline( 89.556989, -1.168743)
+
+
 # plot the original test values
-plot(test_regression$Temp) 
+plot(test_regression$Wind, test_regression$Temp) + abline( 89.556989, -1.168743)
+#anna code
+# linear_predict <- predict(linear_regression, newdata=test_regression)
+# plot_lin_pred <- data.frame(Temp_pred = linear_predict, Wind = test_regression$Wind, Temp = test_regression$Temp)
+ggplot(data=test_regression)+
+  geom_abline(aes(intercept =linear_regression$finalModel$coefficients[1], slope = linear_regression$finalModel$coefficients[2], col="Regression Line")) +
+  geom_point(aes(x = Wind, y = Temp, col = "Observed values")) 
+
 ```
 
 4 e) Residuals should be normally distributed. Plot the density of the residuals
 ```{r}
 residuals_lin <- residuals(linear_regression)
 
+ggplot() +
+ geom_density(aes(residuals_lin))
 # ggplot(data=residvpredict) +
 #  geom_density(aes(residual))
+
+
 ```
 
 
@@ -179,4 +195,19 @@ cor.test(train_regression$Wind, resid(linear_regression))
 5. Create a linear model using L1 or L2 regularization to predict Temperature from Wind and Month variables. Plot your predicted values and the real Y values on the same plot. 
 
 
+```{r}
+library(elasticnet)
+```
+
+```{r}
+lasso_regression <- train(Temp ~ Wind + Month, data=train_regression, method = "lasso")
+
+lasso_predict <- predict(lasso_regression, newdata=test_regression)
+
+ggplot(data=test_regression)+ 
+  geom_point(aes(x = Wind, y = Temp), col = " red") + geom_point(aes(x = Wind, y = lasso_predict), col="blue")
+
+ggplot(data=test_regression)+ 
+  geom_point(aes(x = Month, y = Temp), col = " red") + geom_point(aes(x = Month, y = lasso_predict), col="blue")
+```
 
